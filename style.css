@@ -1,0 +1,32 @@
+.input_box {
+    border: 0.1em solid;
+    border-radius: 1em;
+    padding: 0.5em;
+    background-color: rgb(245, 241, 237);
+    /*flex: auto;*/
+    /*display: flex;*/
+}
+
+.comment_box {
+    border-left: 0.4em solid black;
+    padding: 1em;
+    color: black;
+}
+
+.submit_button {
+    border-left: 1em;
+    color: whitesmoke;
+    background-color: black;
+}
+
+.delete_button {
+    border-left: 1em;
+    color: whitesmoke;
+    background-color: black;
+}
+
+@media (hover:hover) {
+    .comment_box:hover {
+        border-left: 0.4em solid red;
+    }
+}
