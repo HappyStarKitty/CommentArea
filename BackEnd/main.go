@@ -9,7 +9,9 @@ import (
 )
 
 func main() {
-	db.InitDB()
+	if err := db.InitDB(); err != nil {
+		log.Fatalf("Failed to initialize database: %v", err)
+	}
 
 	mux := http.NewServeMux()
 
@@ -17,10 +19,15 @@ func main() {
 	mux.HandleFunc("/comment/add", server.AddComment)
 	mux.HandleFunc("/comment/delete", server.DeleteComment)
 
-	handler := cors.Default().Handler(mux)
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type"},
+		AllowCredentials: true,
+	}).Handler(mux)
 
 	log.Println("Starting server on :8080")
-	if err := http.ListenAndServe(":8080", handler); err != nil {
+	if err := http.ListenAndServe(":8080", corsHandler); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
 }

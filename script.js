@@ -3,13 +3,11 @@ const commentSection = document.querySelector("#commentSection");
 const submitButton = document.querySelector("#submitButton");
 const userNameInput = document.querySelector("#userName");
 const commentContentInput = document.querySelector("#commentContent");
-const deleteButton = document.querySelectorAll(".deleteButton");
 const previousPageButton=document.querySelector("#previousPage")
 const nextPageButton=document.querySelector("#nextPage")
 
 let currentPage=1;
 const pageSize=10;
-let commentNumber = 0;
 
 function resetInput() {
     userNameInput.value = "";
@@ -19,7 +17,6 @@ function resetInput() {
 function deleteComment(event){
   const comment = event.target.parentElement;
   const commentId=comment.getAttribute("data-id");
-    html.removeChild(comment);
     fetch(`http://localhost:8080/comment/delete?id=${commentId}`,{
         method:'DELETE',
         headers:{
@@ -30,19 +27,19 @@ function deleteComment(event){
         .then(data=>{
           if (data.code===0){
             console.log("Comment deleted successfully");
+            getComment(currentPage,pageSize);
           }else{
             console.error("Failed to delete comment",data.msg);
           }
-        }
-)
+        })
         .catch(error=>{
           console.error("Error:",error);
-        });}
+        });
+}
 
 function addComment() {
     const userName = userNameInput.value;
     const commentContent = commentContentInput.value;
-    commentNumber = commentNumber + 1;
 
     fetch('http://localhost:8080/comment/add',{
       method:'POST',
@@ -78,8 +75,8 @@ function getComment(page,size){
     .then(data=>{
       if (data.code===0){
         console.log("Comments fetched successfully");
-        renderComments(data.data);
-        updatePaginationButtons(data.total);
+        renderComments(data.data.comments);
+        updatePaginationButtons(data.data.total);
       }else{
         console.error("Error fetching comments:",data.msg);
       }
@@ -93,40 +90,27 @@ function renderComments(comments){
   comments.forEach(comment =>{
     const commentDiv=document.createElement("div");
     commentDiv.className="comment_box";
+    commentDiv.setAttribute("data-id",comment.id);
     const commentatorName=document.createElement("h3");
     commentatorName.textContent=comment.name;
     const commentatorContent=document.createElement("p");
     commentatorContent.textContent=comment.content;
     const deleteButton=document.createElement("button");
     deleteButton.textContent="删除";
+    deleteButton.className="delete_button";
+    const shiftRow=document.createElement("br");
     deleteButton.addEventListener("click",deleteComment);
 
     commentDiv.appendChild(commentatorName);
     commentDiv.appendChild(commentatorContent);
     commentDiv.appendChild(deleteButton);
     commentSection.appendChild(commentDiv);
+    commentSection.appendChild(shiftRow);
   });}
   else {
     console.error("Comments data is not an array");
   }
 }
-
-function deleteComment(commentID){
-  fetch('http://localhost:8080/comment/delete?id=${commentID}',{
-    method:'DELETE'
-  })
-  .then(response=>response.json())
-  .then(data=>{
-    if(data.code===0){
-      console.log("Comment deleted successfully");
-      getComment(currentPage,pageSize);
-    }else{
-      console.error("Error deleting comment:",data.msg);
-    }
-  })
-  .catch(error=>console.error("Error:".error));
-}
-
 
 function updatePaginationButtons(totalComments){
   const totalPages=Math.ceil(totalComments/pageSize);

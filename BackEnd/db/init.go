@@ -2,7 +2,7 @@ package db
 
 import (
 	"database/sql"
-	//"fmt"
+	"fmt"
 	//"log"
 	//"os"
 
@@ -11,16 +11,18 @@ import (
 
 var db *sql.DB
 
-func InitDB() {
+func InitDB() error {
 	var err error
 	connStr := "longyue:longyue0511@tcp(127.0.0.1:3306)/Comments"
 	db, err = sql.Open("mysql", connStr)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("failed to open database connection: %v", err)
 	}
 
 	err = db.Ping()
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("failed to ping database: %v", err)
 	}
+
+	return nil
 }

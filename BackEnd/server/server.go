@@ -50,35 +50,20 @@ func GetComment(w http.ResponseWriter, r *http.Request) {
 		size = 10
 	}
 
-	dbComments, err := db.GetComment(page, size)
+	dbComments, total, err := db.GetComment(page, size)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	start := (page - 1) * size
-	end := start + size
-	if start > len(dbComments) {
-		start = len(dbComments)
+	response := GetCommentResponse{
+		Code: 0,
+		Msg:  "success",
+		Data: GetData{
+			Total:    total,
+			Comments: dbComments,
+		},
 	}
-	if end > len(dbComments) {
-		end = len(dbComments)
-	}
-	pagedComments := dbComments[start:end]
-
-	comments := make([]db.Comment, len(pagedComments))
-	for i, c := range pagedComments {
-		comments[i] = db.Comment{
-			ID:      c.ID,
-			Name:    c.Name,
-			Content: c.Content,
-		}
-	}
-	var response GetCommentResponse
-	response.Code = 0
-	response.Msg = "success"
-	response.Data.Total = len(dbComments)
-	response.Data.Comments = comments
 
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	json.NewEncoder(w).Encode(response)
