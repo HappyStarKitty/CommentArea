@@ -3,6 +3,8 @@ package server
 import (
 	"BackEnd/db"
 	"encoding/json"
+	"log"
+
 	//"github.com/rs/cors"
 	"net/http"
 	"strconv"
@@ -67,6 +69,7 @@ func GetComment(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	json.NewEncoder(w).Encode(response)
+	log.Printf("Response JSON: %+v", response)
 }
 
 func AddComment(w http.ResponseWriter, r *http.Request) {

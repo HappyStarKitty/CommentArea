@@ -8,9 +8,9 @@ import (
 //var db *sql.DB
 
 type Comment struct {
-	ID      int    `json:"id"`
-	Name    string `json:"name"`
-	Content string `json:"content"`
+	ID      int    `json:"ID"`
+	Name    string `json:"Name"`
+	Content string `json:"Content"`
 }
 
 func GetComment(page, size int) ([]Comment, int, error) {

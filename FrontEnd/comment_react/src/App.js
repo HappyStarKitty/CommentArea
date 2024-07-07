@@ -19,11 +19,14 @@ function App() {
   const fetchComments = async (page, size) => {
     try {
       const response = await fetch(`http://localhost:8080/comment/get?page=${page}&size=${size}`);
+      //console.log(response);
       const data = await response.json();
+      console.log(data);
       if (data.code === 0) {
-        setComments(data.data.comments || []); // Ensure comments is an array
-        setTotalComments(data.data.total || 0); // Ensure totalComments is a number
+        setComments(data.data.comments || []); 
+        setTotalComments(data.data.total || 0); 
         setLoading(false);
+        //console.log("this step is done");
       } else {
         console.error("Error fetching comments:", data.msg);
       }
@@ -52,15 +55,16 @@ function App() {
     }
   };
 
-  const deleteComment = async (id) => {
+  const deleteComment = async (ID) => {
     try {
-      const response = await fetch(`http://localhost:8080/comment/delete?id=${id}`, {
+      const response = await fetch(`http://localhost:8080/comment/delete?id=${ID}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
         }
       });
       const data = await response.json();
+      console.log(data);
       if (data.code === 0) {
         fetchComments(currentPage, pageSize);
       } else {
@@ -80,7 +84,7 @@ function App() {
       <CommentInput onAddComment={addComment} />
       {comments.length > 0 ? (
         comments.map(comment => (
-          <CommentBox key={comment.id} comment={comment} onDelete={deleteComment} />
+          <CommentBox key={comment.ID} comment={comment} onDelete={deleteComment} />
         ))
       ) : (
         <div></div>
