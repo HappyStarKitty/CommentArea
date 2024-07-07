@@ -34,9 +34,9 @@ type AddCommentResponse struct {
 }
 
 type DeleteCommentResponse struct {
-	Code int        `json:"code"`
-	Msg  string     `json:"msg"`
-	Data db.Comment `json:"data"`
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+	Data error  `json:"data"`
 }
 
 func GetComment(w http.ResponseWriter, r *http.Request) {
@@ -102,15 +102,18 @@ func AddComment(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
+	//log.Printf("this step is done")
 	idStr := r.URL.Query().Get("id")
 	if idStr == "" {
 		http.Error(w, "Missing id", http.StatusBadRequest)
+		log.Printf("Missing id")
 		return
 	}
 
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Invalid id", http.StatusBadRequest)
+		log.Printf("Invalid id")
 		return
 	}
 
@@ -122,7 +125,9 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	var response DeleteCommentResponse
 	response.Code = 0
 	response.Msg = "success"
+	response.Data = nil
 
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	json.NewEncoder(w).Encode(response)
+	log.Printf("Response JSON: %+v", response)
 }
