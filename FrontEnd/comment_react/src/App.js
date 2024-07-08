@@ -57,7 +57,7 @@ function App() {
 
   const deleteComment = async (ID) => {
     try {
-      const response = await fetch(`http://localhost:8080/comment/delete?id=${ID}`, {
+      const response = await fetch(`http://localhost:8080/comment/delete/${ID}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'

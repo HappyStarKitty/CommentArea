@@ -102,7 +102,7 @@ func AddComment(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
-	//log.Printf("this step is done")
+	log.Printf("this step is done")
 	idStr := r.URL.Query().Get("id")
 	if idStr == "" {
 		http.Error(w, "Missing id", http.StatusBadRequest)
@@ -129,5 +129,5 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	json.NewEncoder(w).Encode(response)
-	log.Printf("Response JSON: %+v", response)
+	log.Printf("Response JSON: %+v\n", response)
 }
